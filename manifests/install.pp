@@ -5,6 +5,6 @@
 class ntp::install {
 
   package { $::ntp::package_name:
-    ensure => present,
+    ensure => $::ntp::package_ensure,
   }
 }

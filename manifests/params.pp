@@ -4,14 +4,30 @@
 # It sets variables according to platform.
 #
 class ntp::params {
-  case $::osfamily {
-    'Debian': {
-      $package_name = 'ntp'
-      $service_name = 'ntp'
-    }
-    'RedHat', 'Amazon': {
-      $package_name = 'ntp'
-      $service_name = 'ntp'
+
+  # default package name and ensured status.
+  $package_name = ['ntp', 'ntpdate']
+  $package_ensure = 'present'
+
+  # default service setting.
+  $service_name = 'ntpd'
+  $service_ensure = 'running'
+
+  ## global parameters
+  $root_group = $::operatingsystem ? {
+    /(FreeBSD|Solaris)/ => 'wheel',
+    default             => 'root',
+  }
+
+  # default base config directory and file
+  $conffile = '/etc/ntp.conf'
+
+  $servers = []
+
+  case $::operatingsystem {
+    'Debian', 'Ubuntu',
+    'RedHat', 'CentOS',
+    'Amazon': {
     }
     default: {
       fail("${::operatingsystem} not supported")

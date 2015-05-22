@@ -5,9 +5,13 @@
 #
 class ntp::service {
 
-  service { $::ntp::service_name:
-    ensure     => running,
-    enable     => true,
+  service { 'ntp':
+    name       => $::ntp::service_name,
+    ensure     => $::ntp::service_ensure,
+    enable     => $::ntp::service_ensure ? {
+      'running' => true,
+      'stopped' => false,
+    },
     hasstatus  => true,
     hasrestart => true,
   }
